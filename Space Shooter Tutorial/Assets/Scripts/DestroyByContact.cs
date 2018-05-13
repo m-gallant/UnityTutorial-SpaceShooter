@@ -25,16 +25,24 @@ public class DestroyByContact : MonoBehaviour {
     void OnTriggerEnter(Collider other)
     {
         // note: this just marks them to be destroyed once the code has finished updating the frame so can write in any order
-        if (other.tag == "Boundary")
+
+        if (other.CompareTag("Boundary") || other.CompareTag("Enemy"))
         {
             return;
         }
-        Instantiate(explosion, transform.position, transform.rotation);
+
+        // add this check to account for re-use of script originally designed to have asteroid explosion
+        if (explosion != null)
+        {
+            Instantiate(explosion, transform.position, transform.rotation);
+        }
+
         if (other.tag == "Player")
         {
             Instantiate(playerExplosion, other.transform.position, other.transform.rotation);
             gameController.GameOver();
         }
+
         gameController.AddScore(scoreValue);
         // destroys the laser
         Destroy(other.gameObject);
